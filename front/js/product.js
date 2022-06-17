@@ -31,34 +31,22 @@ btnCart.addEventListener("click",(e)=>{
         idProduit: resultID,
         couleurProduit: couleurchoisie,
         prixProduit: data.price,
-        nombreproduit: quantiteProduit
+        nombreproduit: quantiteProduit,
+        picproduct: data.imageUrl
     }
-    let produitLocalStorage = JSON.parse(localStorage.getItem("product"));
+    let product = [`${couleurchoisie } + ${ resultID}`]
+    let produitLocalStorage = JSON.parse(localStorage.getItem(product));
+ 
     if(produitLocalStorage){
         produitLocalStorage.push(optionProduit);
-        localStorage.setItem("product", JSON.stringify(produitLocalStorage));
+        localStorage.setItem(product, JSON.stringify(produitLocalStorage));
+
+
     }else{
         produitLocalStorage = [];
         produitLocalStorage.push(optionProduit);
-        localStorage.setItem("product", JSON.stringify(produitLocalStorage));
+        localStorage.setItem(product, JSON.stringify(produitLocalStorage));
     }
         })
     })
 );
-
-
-
-
-
-/*
-        let couleurs = ("");
-    for (let colors of data){
-        couleurs += `<option value="${colors.data.colors}">${colors.data.colors}</option>`;
-    } 
-    document.querySelector("#colors") .innerHTML = couleurs;
-        for (let i = 0; i < couleurs; i++) {
-        console.log("Passager embarqué !");
-     }
-})
-);
-*/
