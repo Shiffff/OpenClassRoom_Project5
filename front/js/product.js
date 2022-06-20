@@ -34,12 +34,45 @@ btnCart.addEventListener("click",(e)=>{
         nombreproduit: quantiteProduit,
         picproduct: data.imageUrl
     }
-    let product = [`${couleurchoisie } + ${ resultID}`]
+
+    let productLS = JSON.parse(localStorage.getItem("Product"));
+
+
+    if(productLS){
+        for(i = 0; i < productLS.length; i++)
+        if(productLS[i].idProduit == optionProduit.idProduit &&
+             productLS[i].couleurProduit == optionProduit.couleurProduit){
+            return(
+                productLS[i].nombreproduit = parseInt(productLS[i].nombreproduit) + parseInt(optionProduit.nombreproduit),
+                localStorage.setItem("Product",JSON.stringify(productLS)),
+                (productLS = JSON.parse(localStorage.getItem("Product")))
+            )
+        }
+        else (productLS[i].idProduit != optionProduit.idProduit &&
+            productLS[i].couleurProduit != optionProduit.couleurProduit)
+            {
+            productLS.push(optionProduit);
+            localStorage.setItem("Product", JSON.stringify(productLS));
+        
+            }
+    }else{
+        productLS = [];
+        productLS.push(optionProduit);
+        localStorage.setItem("Product", JSON.stringify(productLS));
+    }
+
+
+
+
+    
+    /*let product = [`${couleurchoisie } + ${ resultID}`]
     let produitLocalStorage = JSON.parse(localStorage.getItem(product));
  
     if(produitLocalStorage){
         produitLocalStorage.push(optionProduit);
         localStorage.setItem(product, JSON.stringify(produitLocalStorage));
+    }else if{
+
 
 
     }else{
@@ -47,6 +80,8 @@ btnCart.addEventListener("click",(e)=>{
         produitLocalStorage.push(optionProduit);
         localStorage.setItem(product, JSON.stringify(produitLocalStorage));
     }
+
+    */
         })
     })
 );
