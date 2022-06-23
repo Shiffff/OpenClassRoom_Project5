@@ -61,27 +61,7 @@ btnCart.addEventListener("click",(e)=>{
         localStorage.setItem("Product", JSON.stringify(productLS));
     }
 
-
-
-
-    
-    /*let product = [`${couleurchoisie } + ${ resultID}`]
-    let produitLocalStorage = JSON.parse(localStorage.getItem(product));
- 
-    if(produitLocalStorage){
-        produitLocalStorage.push(optionProduit);
-        localStorage.setItem(product, JSON.stringify(produitLocalStorage));
-    }else if{
-
-
-
-    }else{
-        produitLocalStorage = [];
-        produitLocalStorage.push(optionProduit);
-        localStorage.setItem(product, JSON.stringify(produitLocalStorage));
-    }
-
-    */
         })
     })
 );
+
