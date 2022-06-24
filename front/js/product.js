@@ -30,7 +30,6 @@ btnCart.addEventListener("click",(e)=>{
         nomProduit: data.name,
         idProduit: resultID,
         couleurProduit: couleurchoisie,
-        prixProduit: data.price,
         nombreproduit: quantiteProduit,
         picproduct: data.imageUrl
     }
