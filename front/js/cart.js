@@ -32,13 +32,33 @@ response.json().then((data) => {
           <input type="number" class="itemQuantity" data-id="${idProduit}" data-couleur="${itemcolor}" name="itemQuantity" min="1" max="100" value="${quantiteproduct}">
         </div>
         <div class="cart__item__content__settings__delete">
-          <p class="deleteItem">Supprimer</p>
+          <p class="deleteItem"data-id="${idProduit}" data-couleur="${itemcolor}">Supprimer</p>
         </div>
       </div>
     </div>
   </article>`;
 
 document.querySelector("#cart__items") .innerHTML = affichage;
+
+let panier = JSON.parse(localStorage.getItem("Product"));
+let totalArticle = 0;
+let prixCombiné = 0;
+let totalPrix = 0;
+for (let article of panier) {
+  totalArticle += JSON.parse(article.nombreproduit);
+  prixCombiné = article.nombreproduit * price;
+  totalPrix += prixCombiné;
+}
+document.getElementById("totalQuantity").textContent = totalArticle;
+document.getElementById("totalPrice").textContent = totalPrix;
+  
+
+// total Product $$$$$$$
+let nbProduits = document.querySelectorAll("input.itemQuantity")  
+for (let nbProduit of nbProduits)
+nbProduit.addEventListener("change", recupProd)
+
+function recupProd(){
 
     let panier = JSON.parse(localStorage.getItem("Product"));
     let totalArticle = 0;
@@ -48,35 +68,79 @@ document.querySelector("#cart__items") .innerHTML = affichage;
       totalArticle += JSON.parse(article.nombreproduit);
       prixCombiné = article.nombreproduit * price;
       totalPrix += prixCombiné;
-
+      location.reload();
     }
     document.getElementById("totalQuantity").textContent = totalArticle;
     document.getElementById("totalPrice").textContent = totalPrix;
+  }
   }))
 }
 
 
-//Mise à jour du panier quand on modifie la quantité pour chaque produit
-function changeQuantity() {
-  let itemQuantity = document.getElementsByClassName("itemQuantity");
-  //console.log(itemQuantity);
-  for (let q = 0; q < itemQuantity.length; q++) {
-    let changeQuantity = itemQuantity[q];
-    //Mise à jour au moment de changer la valeur de l'input
-    changeQuantity.addEventListener("input", (event) => {
-      itemQuantity.innerHTML += `<input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100"
-            value="${event.target.value}">`;
 
-      changeQuantity.addEventListener("change", (event) => {
-        if (event.target.value > 100) event.target.value = 100;
-        if (event.target.value < 0) event.target.value = 0;
-      });
+/*window.onload = () => {
+  
+let boutonsSupr = document.querySelectorAll(".deleteItem");
+for (let boutonSupr of boutonsSupr)
+boutonSupr.addEventListener("click", Supr)
+}
 
-      saveInLocalStorage[q].productQuantity = Number(changeQuantity.value);
+function Supr(){
+  console.log("event")
+}
 
-      localStorage.setItem("product", JSON.stringify(saveInLocalStorage));
+*/
 
-      updateCart(q);
-    });
+window.onload = () => {
+
+  let nbProduits = document.querySelectorAll("input.itemQuantity")
+  for (let nbProduit of nbProduits)
+  nbProduit.addEventListener("change", recupProd)
+  function recupProd(){
+  let recupProdId = this.dataset.id
+  let recupProdColor = this.dataset.couleur
+  let recupProdValue = this.value
+  
+  for (let item of productLS){
+      if(recupProdId == item.idProduit &&
+        recupProdColor == item.couleurProduit){
+          return(
+            item.nombreproduit = recupProdValue,
+              localStorage.setItem("Product",JSON.stringify(productLS)),
+              (productLS = JSON.parse(localStorage.getItem("Product")))
+          )
+      }
   }
+  }
+  let boutonsSupr = document.querySelectorAll(".deleteItem");
+for (let boutonSupr of boutonsSupr)
+boutonSupr.addEventListener("click", Supr)
+}
+/*
+function Supr(){
+let idSupr = this.dataset.id
+let ColorSupr = this.dataset.couleur
+let productLSFiltre = productLS.filter(function(el){
+  for (let item of productLS){
+    if(idSupr != item.idProduit &&
+      ColorSupr != item.couleurProduit){
+        
+})
+}
+*/
+function Supr(){
+  let idSupr = this.dataset.id
+  let ColorSupr = this.dataset.couleur
+  for (let item of productLS){
+    if(idSupr == item.idProduit &&
+      ColorSupr == item.couleurProduit){
+          console.log(productLS)
+          console.log(item)
+          let filterproduct = productLS.filter(obj => obj != item)
+          console.log(filterproduct)
+          localStorage.setItem("Product", JSON.stringify(filterproduct));
+          location.reload();
+
+    }
+}
 }
