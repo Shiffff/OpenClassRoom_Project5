@@ -1,17 +1,17 @@
-let productLS = JSON.parse(localStorage.getItem("Product"));
+let productLS = JSON.parse(localStorage.getItem("Product")); // rappel de la clé dans le local storage
 
 
-let affichage = ("");
+let affichage = ("");     // création d'une variable pour stocké tout les éléments HTML
 for (let item of productLS){
-    let img = item.picproduct
-    let nameproduct = item.nomProduit
-    let itemcolor = item.couleurProduit
-    let quantiteproduct = item.nombreproduit
-    let idProduit = item.idProduit
-    let urlApiProduct = `http://localhost:3000/api/products/${idProduit}`;
-    let price = ('')
+    const img = item.picproduct     // création d'une boucle (pour chaque produits du LS création d'une variable pour chaque parametre d'un produit)
+    const nameproduct = item.nomProduit
+    const itemcolor = item.couleurProduit
+    const quantiteproduct = item.nombreproduit
+    const idProduit = item.idProduit
+    let urlApiProduct = `http://localhost:3000/api/products/${idProduit}`;    
+    let price = ('')    // Variable pour contenir chaque price par ID produit
     
-    fetch(urlApiProduct).then((response) =>
+    fetch(urlApiProduct).then((response) =>     //Rappel de l'API produit car le prix ne doit pas etre stocké dans le LS 
 response.json().then((data) => {
   price = data.price
 
@@ -38,106 +38,101 @@ response.json().then((data) => {
     </div>
   </article>`;
 
-document.querySelector("#cart__items") .innerHTML = affichage;
+document.querySelector("#cart__items") .innerHTML = affichage; // insertion dans le HTML
 
-let panier = JSON.parse(localStorage.getItem("Product"));
+const panier = JSON.parse(localStorage.getItem("Product")); 
 let totalArticle = 0;
 let prixCombiné = 0;
 let totalPrix = 0;
-for (let article of panier) {
+for (let article of panier) {   // création d'une boucle pour chaque article  récupéré nombre et multiplié nombre * prix
   totalArticle += JSON.parse(article.nombreproduit);
   prixCombiné = article.nombreproduit * price;
   totalPrix += prixCombiné;
 }
-document.getElementById("totalQuantity").textContent = totalArticle;
+document.getElementById("totalQuantity").textContent = totalArticle; // // insertion dans le HTML
 document.getElementById("totalPrice").textContent = totalPrix;
   
 
-// total Product $$$$$$$
-let nbProduits = document.querySelectorAll("input.itemQuantity")  
+const nbProduits = document.querySelectorAll("input.itemQuantity")  
 for (let nbProduit of nbProduits)
-nbProduit.addEventListener("change", recupProd)
+nbProduit.addEventListener("change", refreshprod) // séléction et écoute via "change " de l'élément input.itemQuantity (choix quantité)
 
-function recupProd(){
 
-    let panier = JSON.parse(localStorage.getItem("Product"));
-    let totalArticle = 0;
-    let prixCombiné = 0;
-    let totalPrix = 0;
-    for (let article of panier) {
-      totalArticle += JSON.parse(article.nombreproduit);
-      prixCombiné = article.nombreproduit * price;
-      totalPrix += prixCombiné;
-      location.reload();
-    }
-    document.getElementById("totalQuantity").textContent = totalArticle;
-    document.getElementById("totalPrice").textContent = totalPrix;
-  }
-  }))
-}
-
-window.onload = () => {
-
-  let nbProduits = document.querySelectorAll("input.itemQuantity")
-  for (let nbProduit of nbProduits)
-  nbProduit.addEventListener("change", recupProd)
-  function recupProd(){
-  let recupProdId = this.dataset.id
-  let recupProdColor = this.dataset.couleur
-  let recupProdValue = this.value
-  
+  function refreshprod(){     
+  const recupProdId = this.dataset.id // récup l'id du dataset précédement crée pour identifier le produit et couleur + nombre 
+  const recupProdColor = this.dataset.couleur
+  const recupProdValue = this.value
+  if (recupProdValue > 0){      // Si value choisie est supérieur a 0
   for (let item of productLS){
       if(recupProdId == item.idProduit &&
-        recupProdColor == item.couleurProduit){
+        recupProdColor == item.couleurProduit){       // Compare couleur + id et si identique faire :
           return(
             item.nombreproduit = recupProdValue,
-              localStorage.setItem("Product",JSON.stringify(productLS)),
-              (productLS = JSON.parse(localStorage.getItem("Product")))
+              localStorage.setItem("Product",JSON.stringify(productLS)),  //remplacé l'ancienne quantité par la nouvelle et la renvoyé au localstorage
+              (productLS = JSON.parse(localStorage.getItem("Product"))),
+              location.reload()
           )
       }
   }
-  }
-  let boutonsSupr = document.querySelectorAll(".deleteItem");
-for (let boutonSupr of boutonsSupr)
-boutonSupr.addEventListener("click", Supr)
 }
+else if(recupProdValue < 0){
+  alert(
+    "Veuillez choisir une quantité entre 1 et 100"      //Sinon message d'erreur si quantité négative
+  );
+}
+}
+
+
+
+  const boutonsSupr = document.querySelectorAll(".deleteItem");
+for (let boutonSupr of boutonsSupr)             // séléction et écoute du bouton supprimer au click
+boutonSupr.addEventListener("click", Supr)
+
+
+
 
 function Supr(){
   let idSupr = this.dataset.id
-  let ColorSupr = this.dataset.couleur
-  for (let item of productLS){
-    if(idSupr == item.idProduit &&
+  let ColorSupr = this.dataset.couleur        //Récupération dataset précédement crée pour identitifier le produit
+  for (let item of productLS){        //boucle pour chaque produit
+    if(idSupr == item.idProduit &&    // Si id et couleur identique
       ColorSupr == item.couleurProduit){
-          console.log(productLS)
-          console.log(item)
-          let filterproduct = productLS.filter(obj => obj != item)
-          console.log(filterproduct)
-          localStorage.setItem("Product", JSON.stringify(filterproduct));
-          location.reload();
+          let filterproduct = productLS.filter(obj => obj != item)          // utilisation commande filter pour supprimé l'élément séléctionné dans le array (LS précédement récupéré)
+          localStorage.setItem("Product", JSON.stringify(filterproduct));     // renvoyé le LS et remplacé la clé product éxistante
+          location.reload();      // Refresh la page
 
+        }
+      }
     }
+  }))
 }
-}
+
+
+
+
+
+
+
 // ***********************************************************************************************************************************************
 
-let form = document.querySelector('.cart__order__form')
-let inputFirstName = form.firstName
-let inputLastName = form.lastName
-let inputaddress = form.address
-let inputcity = form.city
-let inputemail = form.email
+const form = document.querySelector('.cart__order__form')   // selection du des differrents champs input 
+const inputFirstName = form.firstName
+const inputLastName = form.lastName
+const inputaddress = form.address       // recupération des champs
+const inputcity = form.city
+const inputemail = form.email
 
-form.firstName.addEventListener('change', function(){
+form.firstName.addEventListener('change', function(){       // écoute de l'input via "change"
     valideFirstName(this);
 })
 const valideFirstName =function(inputFirstName){
-  let firstNameRegExp = new RegExp("^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$", "gi")
+  const firstNameRegExp = new RegExp("^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$", "gi")   // first regexp
 
 
-let testFirstName = firstNameRegExp.test(inputFirstName.value);
+const testFirstName = firstNameRegExp.test(inputFirstName.value);
 let firstNameErrorMsg = document.querySelector('#firstNameErrorMsg')
 if(testFirstName == false){
-  firstNameErrorMsg.innerHTML = "Vérifié votre saisie"
+  firstNameErrorMsg.innerHTML = "Vérifié votre saisie"    // message error si regexp non valide
   return false;
 }else{
   firstNameErrorMsg.innerHTML = ""
@@ -150,7 +145,7 @@ form.lastName.addEventListener('change', function(){
   valideLastName(this);
 })
 const valideLastName =function(inputLastName){
-let LastNameRegExp = new RegExp( "^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$", 'g')
+const LastNameRegExp = new RegExp( "^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$", 'g')
 
 let testLastName = LastNameRegExp.test(inputLastName.value);
 let LastNameErrorMsg = document.querySelector('#lastNameErrorMsg')
@@ -170,7 +165,7 @@ form.address.addEventListener('change', function(){
   valideaddress(this);
 })
 const valideaddress =function(inputaddress){
-let addressRegExp = new RegExp( /[0-9,'a-zA-Zéèàêëï]/g)
+const addressRegExp = new RegExp( /[0-9,'a-zA-Zéèàêëï]/g)
 
 let testaddress = addressRegExp.test(inputaddress.value);
 let addressErrorMsg = document.querySelector('#addressErrorMsg')
@@ -189,7 +184,7 @@ form.city.addEventListener('change', function(){
   validecity(this);
 })
 const validecity =function(inputcity){
-let cityRegExp = new RegExp( /^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$/, 'g')
+const cityRegExp = new RegExp( /^[a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+([-'\s][a-zA-ZéèîïÉÈÎÏ][a-zéèêàçîï]+)?$/, 'g')
 
 let testcity = cityRegExp.test(inputcity.value);
 let cityErrorMsg = document.querySelector('#cityErrorMsg')
@@ -208,7 +203,7 @@ form.email.addEventListener('change', function(){
   valideemail(this);
 })
 const valideemail =function(inputemail){
-let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
+const emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$', 'g');
 
 let testemail = emailRegExp.test(inputemail.value);
 let emailErrorMsg = document.querySelector('#emailErrorMsg')
@@ -222,27 +217,32 @@ if(testemail == false){
 
 }
 }
+
+//************************************************************************ */
+
 let ReadyToSend
 let newBasket = [];
 function tabID() {
 // appel des ressources
 let panier = JSON.parse(localStorage.getItem("Product"));
 // récupération des id produit dans panierId
-if (panier && panier.length > 0) {
+if (panier && panier.length > 0) {      // si il y a quelques choses dans le localstorage
   for (let items of panier) {
-    newBasket.push(items.idProduit);
+    newBasket.push(items.idProduit);    // séléctionné uniquement les ID produit et les mettre dans une nouvelle variables
   }
 } else {
   console.log("le panier est vide");
-  document.querySelector("#order").setAttribute("value", "Panier vide!");
+  document.querySelector('H1').innerHTML = "Votre panier est vide"
 }
 }
 tabID();
+
+
 form.addEventListener('submit', function(e){
   e.preventDefault();
-  if(valideFirstName(form.firstName) && valideLastName(form.lastName) && valideaddress(form.address) && validecity(form.city) && valideemail(form.email)){
+  if(valideFirstName(form.firstName) && valideLastName(form.lastName) && valideaddress(form.address) && validecity(form.city) && valideemail(form.email)){    // si tout les champs sont rempli et OK
     console.log('valide')
-    ReadyToSend ={
+    ReadyToSend ={        //Formé l'objet a envoyé avec un objet contenant toutes les infos du client
       contact: {
       firstName: inputFirstName.value,
       lastName: inputLastName.value,
@@ -250,32 +250,24 @@ form.addEventListener('submit', function(e){
       city: inputcity.value,
       email: inputemail.value
      },
-     products: newBasket,
+     products: newBasket,   // Et les ID des produits séléctionné
     }
-    console.log(ReadyToSend)
-    let options = {
+    let options = {         // utilisation de la méthode post vers l'API pour lui confirmé l'action
       method: "POST",
       body: JSON.stringify(ReadyToSend),
       headers: {
         "content-type": "application/json",
       },
     };
-    fetch("http://localhost:3000/api/products/order", options)
+    fetch("http://localhost:3000/api/products/order", options)        // récupération de la reponse de l'api (ID commande généré)
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
       // localStorage.clear();
-      window.location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;
+      window.location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;   // direction vers la nouvelle page crée avec l'id retourné par l'api en paramétre
     });
-
-
-
-
-
-
 
   }else{
     console.log("non valide")
   }
 });
-
