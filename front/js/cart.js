@@ -264,7 +264,7 @@ form.addEventListener('submit', function(e){
     .then((data) => {
       console.log(data);
       // localStorage.clear();
-      window.location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;   // direction vers la nouvelle page crée avec l'id retourné par l'api en paramétre
+      window.location.href = '/front/html/confirmation.html' + '?orderId=' + data.orderId;   // direction vers la nouvelle page crée avec l'id retourné par l'api en paramétre
     });
 
   }else{
